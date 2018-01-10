@@ -1,0 +1,18 @@
+tasks:
+  daily_politics:
+    html:
+      url: https://www.bbc.co.uk/iplayer/episodes/b006mjxb
+      title_from: link
+    regexp:
+      accept:
+        - First shown
+      rest: reject
+    exec:
+      auto_escape: yes
+      on_output:
+        for_accepted: "youtube-dl -f bestaudio -R 10 -q {{url}}"
+
+schedules:
+  - tasks: '*'
+    interval:
+      days: 1
