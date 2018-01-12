@@ -16,7 +16,7 @@ my $vars = {
     name     => 'Count Edward van Halen',
     debt     => '3 riffs and a solo',
     deadline => 'the next chorus',
-    menu   => [ 'modules', 'authors', 'scripts' ],
+    menu   => [ "foo.mp3", "bar.mp3", "baz.mp3" ],
 };
 
-$tt->process('overdrawn.tmpl', $vars) || die $tt->error(), "\n";
+$tt->process('daily_politics.atom.tmpl', $vars) || die $tt->error(), "\n";
