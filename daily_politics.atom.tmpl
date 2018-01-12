@@ -8,19 +8,18 @@
   </author>
   <link href="http://solasistim.net/" />
   <link rel="self" href="http://solasistim.net/daily_politics.atom" />
-
-  [% FOREACH episode = menu %]
+  [% FOREACH episode = episodes %]
   <entry>
-    <id>tag:solasistim.net,2018-01-10:/dailypolitics/1</id>
-    <title>Daily Politics, 09_01_2018</title>
-    <updated>2018-01-10T12:00:00Z</updated>
+    <id>tag:solasistim.net,2018-01-10:[% episode.file %]</id>
+    <title>[% episode.file %]</title>
+    <updated>[% episode.updated %]</updated>
     <link href="http://solasistim.net/dailypolitics/1" />
     <summary>This is a summary of the daily politics episode.</summary>
     <link rel="enclosure"
           type="audio/mp4"
           title="MP4"
-          href="http://www.solasistim.net/[% episode %]"
-          length="25217952" />
+          href="http://www.solasistim.net/[% episode.file %]"
+          length="[% episode.length %]" />
     <content type="xhtml">
       <div xmlns="http://www.w3.org/1999/xhtml">
         <h1>Show Notes</h1>
