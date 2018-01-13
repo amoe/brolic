@@ -9,6 +9,11 @@ use Template;
 use autodie qw(:all);
 use strict;
 use warnings;
+use URI::Escape qw(uri_escape);
+use CGI;
+
+my $cgi = CGI->new;
+print $cgi->header('application/atom+xml');
 
 # this is an RFC3339 formatter from a module that can probably easily be 
 # hugely simplified
@@ -57,20 +62,18 @@ for my $file (@files) {
     my $mtime = $f->last_modified($abs);
 
     my $dt = DateTime->from_epoch(epoch => $mtime);
-    say dump($dt);
 
     my $rfc_date = format_datetime($dt);
 
     my %record = (
         file => $file,
         length => $length,
-        updated => $rfc_date
+        updated => $rfc_date,
+        escaped => uri_escape($file)
     );
 
     push @objects, \%record;
 }
-
-say dump(\@objects);
 
 my $tt = Template->new({
     INCLUDE_PATH => '.',
