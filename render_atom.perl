@@ -1,63 +1,89 @@
 #!/usr/bin/env perl
 use v5.20.2;
+use DateTime;
 use Data::Dump qw/dump/;
 use Getopt::Long;
-use Text::Template;
+use File::Util;
+use File::Spec;
+use Template;
 use autodie qw(:all);
 use strict;
 use warnings;
-
+use URI::Escape qw(uri_escape);
 use CGI;
 
 my $cgi = CGI->new;
 print $cgi->header('application/atom+xml');
 
+# this is an RFC3339 formatter from a module that can probably easily be 
+# hugely simplified
+sub format_datetime {
+    my ($dt) = @_;
 
-my $tmpl = 
-'<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <id>tag:solasistim.net,2018-01-10:/daily_politics.atom</id>
-  <title>Daily Politics</title>
-  <updated>2018-01-10T12:00:00Z</updated>
-  <author>
-    <name>David Banks</name>
-  </author>
-  <link href="http://solasistim.net/" />
-  <link rel="self" href="http://solasistim.net/daily_politics.atom" />
+    my $tz;
+    if ($dt->time_zone()->is_utc()) {
+        $tz = 'Z';
+    } else {
+        my $secs  = $dt->offset();
+        my $sign = $secs < 0 ? '-' : '+';  $secs = abs($secs);
+        my $mins  = int($secs / 60);       $secs %= 60;
+        my $hours = int($mins / 60);       $mins %= 60;
+        if ($secs) {
+            ( $dt = $dt->clone() )
+                ->set_time_zone('UTC');
+            $tz = 'Z';
+        } else {
+            $tz = sprintf('%s%02d:%02d', $sign, $hours, $mins);
+        }
+    }
 
-  <entry>
-    <id>tag:solasistim.net,2018-01-10:/dailypolitics/1</id>
-    <title>Daily Politics, 09_01_2018</title>
-    <updated>2018-01-10T12:00:00Z</updated>
-    <link href="http://solasistim.net/dailypolitics/1" />
-    <summary>This is a summary of the daily politics episode.</summary>
-    <link rel="enclosure"
-          type="audio/mp4"
-          title="MP4"
-          href="http://www.solasistim.net/Daily%20Politics,%2009_01_2018-b09m90mk.mp3"
-          length="25217952" />
-    <content type="xhtml">
-      <div xmlns="http://www.w3.org/1999/xhtml">
-        <h1>Show Notes</h1>
-        <p>Some text goes here.</p>
-      </div>
-    </content>
-  </entry>
-</feed>
-';
+    return
+        $dt->strftime(
+            ($dt->nanosecond()
+             ? '%Y-%m-%dT%H:%M:%S.%9N'
+             : '%Y-%m-%dT%H:%M:%S'
+            )
+    ).$tz;
+}
 
 
-my $template = Text::Template->new(
-    TYPE => 'STRING',
-    SOURCE => $tmpl
-)
-    or die "Couldn't construct template: $Text::Template::ERROR";
+my $path = "/home/amoe/episodes";
 
-my @eps = ("Daily Politics,009_01_2018-b09m90mk.mp3");
+my $f = File::Util->new();
 
-my %vars = (files => \@eps);
+my @files = $f->list_dir($path, '--no-fsdots');
 
-my $result = $template->fill_in(HASH => \%vars);
+my @objects;
 
-print $result;
+for my $file (@files) {
+    my $abs = File::Spec->rel2abs($file, $path);
+    my $length = $f->size($abs);
 
+    my $mtime = $f->last_modified($abs);
+
+    my $dt = DateTime->from_epoch(epoch => $mtime);
+
+    my $rfc_date = format_datetime($dt);
+
+    my %record = (
+        file => $file,
+        length => $length,
+        updated => $rfc_date,
+        escaped => uri_escape($file)
+    );
+
+    push @objects, \%record;
+}
+
+my $tt = Template->new({
+    INCLUDE_PATH => '.',
+});
+
+my $vars = {
+    name     => 'Count Edward van Halen',
+    debt     => '3 riffs and a solo',
+    deadline => 'the next chorus',
+    episodes   => \@objects,
+};
+
+$tt->process('daily_politics.atom.tmpl', $vars) || die $tt->error(), "\n";
