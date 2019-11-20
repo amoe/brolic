@@ -11,8 +11,18 @@ use strict;
 use warnings;
 use URI::Escape qw(uri_escape);
 use CGI;
+use Config::IniFiles;
+
+my $configuration_path = '/usr/local/etc/brolic.ini';
+
+my $cfg = Config::IniFiles->new(-file => $configuration_path);
 
 my $cgi = CGI->new;
+
+my $pod_name = $cgi->param('pod_name');
+my $episode_path = $cfg->val($pod_name, 'episode_path');
+my $template_path = $cfg->val($pod_name, 'template_path');
+
 print $cgi->header('application/atom+xml');
 
 # this is an RFC3339 formatter from a module that can probably easily be 
@@ -47,16 +57,15 @@ sub format_datetime {
 }
 
 
-my $path = "/home/amoe/episodes";
 
 my $f = File::Util->new();
 
-my @files = $f->list_dir($path, '--no-fsdots');
+my @files = $f->list_dir($episode_path, '--no-fsdots');
 
 my @objects;
 
 for my $file (@files) {
-    my $abs = File::Spec->rel2abs($file, $path);
+    my $abs = File::Spec->rel2abs($file, $episode_path);
     my $length = $f->size($abs);
 
     my $mtime = $f->last_modified($abs);
@@ -76,7 +85,7 @@ for my $file (@files) {
 }
 
 my $tt = Template->new({
-    INCLUDE_PATH => '.',
+    ABSOLUTE => 1
 });
 
 my $vars = {
@@ -86,4 +95,4 @@ my $vars = {
     episodes   => \@objects,
 };
 
-$tt->process('daily_politics.atom.tmpl', $vars) || die $tt->error(), "\n";
+$tt->process($template_path, $vars) || die $tt->error(), "\n";
