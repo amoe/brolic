@@ -25,6 +25,7 @@ my $pod_name = $cgi->param('pod_name');
 my $episode_path = $cfg->val($pod_name, 'episode_path');
 my $template_path = $cfg->val($pod_name, 'template_path');
 my $uri_prefix = $cfg->val($pod_name, 'uri_prefix');
+my $pod_title = $cfg->val($pod_name, 'title');
 
 print $cgi->header('application/atom+xml');
 
@@ -94,7 +95,7 @@ for my $abs_path (@files) {
         updated => $rfc_date,
         escaped => uri_escape($file),
         episode_url => $episode_url->as_string(),
-        mime_type => $mime_type
+        mime_type => $mime_type,
     );
 
     push @objects, \%record;
@@ -105,9 +106,7 @@ my $tt = Template->new({
 });
 
 my $vars = {
-    name     => 'Count Edward van Halen',
-    debt     => '3 riffs and a solo',
-    deadline => 'the next chorus',
+    pod_title => $pod_title,
     episodes   => \@objects,
 };
 
