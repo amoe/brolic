@@ -23,7 +23,7 @@ my $cgi = CGI->new;
 my $pod_name = $cgi->param('pod_name');
 my $episode_path = $cfg->val($pod_name, 'episode_path');
 my $template_path = $cfg->val($pod_name, 'template_path');
-my $uri_prefix = $cfg->val($pod_name, 'uri_prefix')
+my $uri_prefix = $cfg->val($pod_name, 'uri_prefix');
 
 print $cgi->header('application/atom+xml');
 
