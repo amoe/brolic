@@ -69,7 +69,7 @@ for my $abs_path (@files) {
     my $file = File::Spec->rel2abs($abs_path, $episode_path);
     my $length = $f->size($abs_path);
 
-    my $mtime = $f->last_modified($abs);
+    my $mtime = $f->last_modified($abs_path);
 
     my $dt = DateTime->from_epoch(epoch => $mtime);
 
