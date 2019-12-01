@@ -10,3 +10,7 @@ Set of restricted strings should be passable to select a template.
 
 Script can then read the config to determine what template to render and what
 directory to read.
+
+## Install
+
+Run `make install`.
