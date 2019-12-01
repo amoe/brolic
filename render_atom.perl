@@ -4,7 +4,7 @@ use DateTime;
 use Data::Dump qw/dump/;
 use Getopt::Long;
 use File::Util;
-use File::Spec;
+use File::Spec::Functions qw(abs2rel);
 use Template;
 use autodie qw(:all);
 use strict;
@@ -64,9 +64,10 @@ my @files = $f->list_dir($episode_path, {no_fsdots => 1, files_only => 1, recurs
 
 my @objects;
 
-for my $file (@files) {
-    my $abs = File::Spec->rel2abs($file, $episode_path);
-    my $length = $f->size($abs);
+for my $abs_path (@files) {
+    # recurse => 1 forces the path to be absolute, so relativize it
+    my $file = File::Spec->rel2abs($abs_path, $episode_path);
+    my $length = $f->size($abs_path);
 
     my $mtime = $f->last_modified($abs);
 
