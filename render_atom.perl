@@ -72,7 +72,7 @@ my $path_prefix = $uri->path;
 
 for my $abs_path (@files) {
     my $mime_type = mimetype($abs_path);
-    if ($mime_type !~ m|^audio/||) next;
+    next unless $mime_type =~ m|^audio/|;
 
     # recurse => 1 forces the path to be absolute, so relativize it
     my $file = abs2rel($abs_path, $episode_path);
