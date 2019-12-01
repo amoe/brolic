@@ -13,6 +13,7 @@ use URI::Escape qw(uri_escape);
 use CGI;
 use Config::IniFiles;
 use URI;
+use File::MimeInfo qw(mimetype);
 
 my $configuration_path = '/usr/local/etc/brolic.ini';
 
@@ -70,6 +71,9 @@ my $uri = URI->new($uri_prefix);
 my $path_prefix = $uri->path;
 
 for my $abs_path (@files) {
+    my $mime_type = mimetype($abs_path);
+    if ($mime_type !~ m|^audio/||) next;
+
     # recurse => 1 forces the path to be absolute, so relativize it
     my $file = abs2rel($abs_path, $episode_path);
     my $length = $f->size($abs_path);
@@ -89,7 +93,8 @@ for my $abs_path (@files) {
         length => $length,
         updated => $rfc_date,
         escaped => uri_escape($file),
-        episode_url => $episode_url->as_string()
+        episode_url => $episode_url->as_string(),
+        mime_type => $mime_type
     );
 
     push @objects, \%record;
