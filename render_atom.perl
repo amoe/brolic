@@ -66,7 +66,7 @@ my @objects;
 
 for my $abs_path (@files) {
     # recurse => 1 forces the path to be absolute, so relativize it
-    my $file = File::Spec->rel2abs($abs_path, $episode_path);
+    my $file = abs2rel($abs_path, $episode_path);
     my $length = $f->size($abs_path);
 
     my $mtime = $f->last_modified($abs_path);
