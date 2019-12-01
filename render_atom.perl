@@ -25,7 +25,7 @@ my $pod_name = $cgi->param('pod_name');
 my $episode_path = $cfg->val($pod_name, 'episode_path');
 my $template_path = $cfg->val($pod_name, 'template_path');
 my $uri_prefix = $cfg->val($pod_name, 'uri_prefix');
-my $pod_title = $cfg->val($pod_name, 'title');
+my $pod_title = $cfg->val($pod_name, 'pod_title');
 my $self_link = $cfg->val($pod_name, 'self_link');
 
 print $cgi->header('application/atom+xml');
