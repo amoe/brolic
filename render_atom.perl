@@ -12,6 +12,7 @@ use warnings;
 use URI::Escape qw(uri_escape);
 use CGI;
 use Config::IniFiles;
+use URI;
 
 my $configuration_path = '/usr/local/etc/brolic.ini';
 
@@ -22,6 +23,7 @@ my $cgi = CGI->new;
 my $pod_name = $cgi->param('pod_name');
 my $episode_path = $cfg->val($pod_name, 'episode_path');
 my $template_path = $cfg->val($pod_name, 'template_path');
+my $uri_prefix = $cfg->val($pod_name, 'uri_prefix')
 
 print $cgi->header('application/atom+xml');
 
@@ -64,6 +66,9 @@ my @files = $f->list_dir($episode_path, {no_fsdots => 1, files_only => 1, recurs
 
 my @objects;
 
+my $uri = URI->new($uri_prefix);
+my $path_prefix = $uri->path;
+
 for my $abs_path (@files) {
     # recurse => 1 forces the path to be absolute, so relativize it
     my $file = abs2rel($abs_path, $episode_path);
@@ -75,11 +80,16 @@ for my $abs_path (@files) {
 
     my $rfc_date = format_datetime($dt);
 
+
+    my $episode_url = $uri->clone();
+    $episode_url->path($path_prefix . $file);
+
     my %record = (
         file => $file,
         length => $length,
         updated => $rfc_date,
-        escaped => uri_escape($file)
+        escaped => uri_escape($file),
+        episode_url => $episode_url->as_string()
     );
 
     push @objects, \%record;
