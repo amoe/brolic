@@ -14,3 +14,19 @@ directory to read.
 ## Install
 
 Run `make install`.
+
+## Call
+
+The parameter is `pod_name`, which references stuff defined in the ini file.
+
+## Ini file example
+
+    [daily_politics]
+    episode_path = /home/amoe/episodes
+    template_path = /usr/local/share/brolic/daily_politics.atom.tmpl
+
+```
+[adam_and_joe]
+episode_path = /mnt/bones/speech/adam_and_joe
+template_path = /usr/local/share/brolic/adam_and_joe.atom.tmpl
+```

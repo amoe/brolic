@@ -60,7 +60,7 @@ sub format_datetime {
 
 my $f = File::Util->new();
 
-my @files = $f->list_dir($episode_path, '--no-fsdots');
+my @files = $f->list_dir($episode_path, {no_fsdots => 1, files_only => 1, recurse => 1});
 
 my @objects;
 
