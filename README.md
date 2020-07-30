@@ -4,13 +4,19 @@ Podcast generator.
 
 ## Install
 
-Run `make install`.
+Run `make install`.  This runs as a CGI script -- old school, huh?  As such, it
+needs to be deployed into the relevant `cgi-bin` of your web server.
 
 ## Call
 
-The parameter is `pod_name`, which references stuff defined in the ini file.
+The parameter is `pod_name`, which references a group of configurations defined
+in the ini file.  Thus, a single config file supports serving multiple podcasts,
+differentiated by the value of this parameter.
 
-## Ini file example
+## Configuration
+
+The configuration is searched for at `/usr/local/etc/brolic.ini`.  It should
+look roughly as follows:
 
 ```
 [adam_and_joe]

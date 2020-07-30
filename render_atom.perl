@@ -1,14 +1,15 @@
 #!/usr/bin/env perl
 use v5.20.2;
+use autodie qw(:all);
+use strict;
+use warnings;
+
 use DateTime;
 use Data::Dump qw/dump/;
 use Getopt::Long;
 use File::Util;
 use File::Spec::Functions qw(abs2rel);
 use Template;
-use autodie qw(:all);
-use strict;
-use warnings;
 use URI::Escape qw(uri_escape);
 use CGI;
 use Config::IniFiles;
