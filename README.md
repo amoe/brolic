@@ -27,6 +27,11 @@ pod_title = Adam and Joe Archive
 self_link = http://kupukupu.solasistim.net/render_atom.cgi?pod_name=adam_and_joe
 ```
 
+Note that you still need to make the files publicly available somewhere.  Here,
+for instance, you would create a symlink in your webroot pointing to the actual
+`episode_path`.  I'm honestly not sure if there's a good reason to separate
+`uri_prefix` and `episode_path`, but it might be useful in some situations.
+
 AFAICT self link isn't really used for much.  The other ones are obvious.
 
 ## Fictionalize updated times on files
