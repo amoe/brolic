@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <id>tag:solasistim.net,2018-01-10:/daily_politics.atom</id>
-  <title>Daily Politics</title>
-  <updated>2018-01-10T12:00:00Z</updated>
+  <id>tag:solasistim.net,2020-09-23:/politics_live.atom</id>
+  <title>[% pod_title %]</title>
+  <updated>2020-09-23T12:00:00Z</updated>
   <author>
     <name>David Banks</name>
   </author>
   <link href="http://solasistim.net/" />
-  <link rel="self" href="http://solasistim.net/daily_politics.atom" />
+  <link rel="self" href="[% self_link %]" />
   [% FOREACH episode = episodes %]
   <entry>
     <id>tag:solasistim.net,2018-01-10:[% episode.file %]</id>
     <title>[% episode.file %]</title>
     <updated>[% episode.updated %]</updated>
-    <link href="http://solasistim.net/dailypolitics/1" />
-    <summary>This is a summary of the daily politics episode.</summary>
+    <link href="http://solasistim.net/politics_live/1" />
+    <summary>This is a fake episode summary.</summary>
     <link rel="enclosure"
-          type="audio/mp4"
+          type="[% episode.mime_type %]"
           title="MP4"
-          href="http://www.solasistim.net/episodes/[% episode.escaped %]"
+          href="[% episode.episode_url | xml %]"
           length="[% episode.length %]" />
     <content type="xhtml">
       <div xmlns="http://www.w3.org/1999/xhtml">
