@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>tag:solasistim.net,2021-10-14:/vorw_music_show.atom</id>
+  <title>[% pod_title %]</title>
+  <updated>2021-10-14T12:00:00Z</updated>
+  <author>
+    <name>David Banks</name>
+  </author>
+  <link href="http://solasistim.net/" />
+  <link rel="self" href="[% self_link %]" />
+  [% FOREACH episode = episodes %]
+  <entry>
+    <id>tag:solasistim.net,2021-10-14:[% episode.escaped %]</id>
+    <title>[% episode.file | xml %]</title>
+    <updated>[% episode.updated %]</updated>
+    <link href="http://solasistim.net/vorw_music_show/1" />
+    <summary>This is a summary.</summary>
+    <link rel="enclosure"
+          type="[% episode.mime_type %]"
+          title="Audio"
+          href="[% episode.episode_url | xml %]"
+          length="[% episode.length %]" />
+    <content type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        <h1>Show Notes</h1>
+        <p>Some text goes here.</p>
+      </div>
+    </content>
+  </entry>
+  [% END %]
+</feed>
